@@ -20,7 +20,7 @@ An enterprise-grade WordPress image built for scale. It uses the new FrankenPHP 
 
 - [WordPress](https://hub.docker.com/_/wordpress "WordPress Docker Image")
 - [FrankenPHP](https://hub.docker.com/r/dunglas/frankenphp "FrankenPHP Docker Image")
-- [Caddy](https://caddyserver.com/ "Caddy Server")
+- [Caddy](https://caddyserver.com/ "Caddy Server"), listening on `:80`.
 
 ### Caching
 

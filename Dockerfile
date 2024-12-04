@@ -30,7 +30,7 @@ FROM dunglas/frankenphp:latest-php${PHP_VERSION} AS base
 LABEL org.opencontainers.image.title=FrankenWP
 LABEL org.opencontainers.image.description="Optimized WordPress containers to run everywhere. Built with FrankenPHP & Caddy."
 LABEL org.opencontainers.image.url=https://wpeverywhere.com
-LABEL org.opencontainers.image.source=https://github.com/StephenMiracle/frankenwp
+LABEL org.opencontainers.image.source=https://github.com/zeabur/frankenwp
 LABEL org.opencontainers.image.licenses=MIT
 LABEL org.opencontainers.image.vendor="Stephen Miracle"
 
@@ -121,10 +121,8 @@ RUN sed -i \
     -e 's/php-fpm/frankenphp/g' \
     /usr/local/bin/docker-entrypoint.sh
 
-
-
-# Add $_SERVER['ssl'] = true; when env USE_SSL = true is set to the wp-config.php file here: /usr/local/bin/wp-config-docker.php
-RUN sed -i 's/<?php/<?php if (!!getenv("FORCE_HTTPS")) { \$_SERVER["HTTPS"] = "on"; } define( "FS_METHOD", "direct" ); set_time_limit(300); /g' /usr/src/wordpress/wp-config-docker.php
+# Set FS_METHOD
+RUN sed -i 's/<?php/<?php define( "FS_METHOD", "direct" ); set_time_limit(300); /g' /usr/src/wordpress/wp-config-docker.php
 
 # Adding WordPress CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
