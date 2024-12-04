@@ -53,7 +53,6 @@ An enterprise-grade WordPress image built for scale. It uses the new FrankenPHP 
 - `WORDPRESS_DB_HOST`: The WordPress database host.
 - `WORDPRESS_TABLE_PREFIX`: The WordPress database table prefix.
 - `WORDPRESS_DEBUG`: Turns on WordPress Debug.
-- `FORCE_HTTPS`: Tells WordPress to use https on requests. This is beneficial behind load balancer. Defaults to true.
 - `WORDPRESS_CONFIG_EXTRA`: use this for adding WP_HOME, WP_SITEURL, etc
 
 See <https://hub.docker.com/_/wordpress> for more WordPress-specific configuration.
