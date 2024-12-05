@@ -76,10 +76,16 @@ RUN install-php-extensions \
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY php.ini $PHP_INI_DIR/conf.d/wp.ini
 
+COPY docker-entrypoint.sh /usr/local/bin/
 COPY --from=wp /usr/src/wordpress /usr/src/wordpress
-COPY --from=wp /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d/
-COPY --from=wp /usr/local/bin/docker-entrypoint.sh /usr/local/bin/
 
+# Patch /usr/src/wordpress
+COPY --from=wp /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d/
+COPY wp-content/mu-plugins /usr/src/wordpress/wp-content/mu-plugins
+RUN mkdir /usr/src/wordpress/wp-content/cache
+
+# Set FS_METHOD
+RUN sed -i 's/<?php/<?php define( "FS_METHOD", "direct" ); set_time_limit(300); /g' /usr/src/wordpress/wp-config-docker.php
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -105,24 +111,7 @@ RUN { \
     echo 'html_errors = Off'; \
     } > $PHP_INI_DIR/conf.d/error-logging.ini
 
-
 WORKDIR /var/www/html
-
-VOLUME /var/www/html/wp-content
-
-
-COPY wp-content/mu-plugins /var/www/html/wp-content/mu-plugins
-RUN mkdir /var/www/html/wp-content/cache
-
-
-
-RUN sed -i \
-    -e 's/\[ "$1" = '\''php-fpm'\'' \]/\[\[ "$1" == frankenphp* \]\]/g' \
-    -e 's/php-fpm/frankenphp/g' \
-    /usr/local/bin/docker-entrypoint.sh
-
-# Set FS_METHOD
-RUN sed -i 's/<?php/<?php define( "FS_METHOD", "direct" ); set_time_limit(300); /g' /usr/src/wordpress/wp-config-docker.php
 
 # Adding WordPress CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
